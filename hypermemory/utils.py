@@ -4,18 +4,23 @@
 
 import inspect
 import hashlib
+import datetime
 
 
-def get_func_str(function):
+def function_string(function):
     return inspect.getsource(function)
 
 
-def get_hash(object):
+def object_hash(object):
     return hashlib.sha1(object).hexdigest()
 
 
-def get_model_id(model):
-    return str(get_hash(get_func_str(model).encode("utf-8")))
+def model_id(model):
+    return str(object_hash(function_string(model).encode("utf-8")))
+
+
+def get_datetime():
+    return datetime.datetime.now().strftime("%d.%m.%Y - %H:%M:%S:%f")
 
 
 def is_sha1(maybe_sha):
