@@ -42,8 +42,8 @@ class LongTermMemory(BaseMemory):
     def load_memory(self, _cand_, _verb_):
         self.memory_dict = self._load_._load_memory(_cand_, _verb_, self.memory_dict)
 
-    def save_memory(self, _main_args_, _opt_args_, _cand_):
-        self._dump_._save_memory(_main_args_, _opt_args_, _cand_, self.memory_dict_new)
+    def save_memory(self, _main_args_, _cand_):
+        self._dump_._save_memory(_main_args_, _cand_, self.memory_dict_new)
 
     def _get_para(self):
         results_dict = self._dump_._get_opt_meta_data(self.memory_dict)

@@ -21,7 +21,7 @@ class MemoryDump(MemoryIO):
 
         self.memory_type = _main_args_.memory
 
-    def _save_memory(self, _main_args_, _opt_args_, _cand_, memory_dict):
+    def _save_memory(self, _main_args_, _cand_, memory_dict):
         self.memory_dict = memory_dict
 
         # Save meta_data
@@ -96,13 +96,6 @@ class MemoryDump(MemoryIO):
 
         with open(self.date_path + "run_data.json", "w") as f:
             json.dump(run_data, f, indent=4)
-
-        """
-        print("_opt_args_.kwargs_opt", _opt_args_.kwargs_opt)
-        opt_para = pd.DataFrame.from_dict(_opt_args_.kwargs_opt, dtype=object)
-        print("opt_para", opt_para)
-        opt_para.to_csv(self.date_path + "opt_para", index=False)
-        """
 
     def _get_func_str(self, func):
         return inspect.getsource(func)
