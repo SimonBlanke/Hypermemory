@@ -19,7 +19,7 @@ class MemoryIO:
         self._main_args_ = _main_args_
 
         self.meta_data_name = meta_data_name(_main_args_.X, _main_args_.y)
-        self.score_col_name = "_score_"
+        self.score_col_name = "score"
 
         model_id_ = model_id(_cand_.func_)
         self.datetime = get_datetime()

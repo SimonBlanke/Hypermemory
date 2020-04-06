@@ -107,18 +107,12 @@ class MemoryDump(MemoryIO):
         return self.model_path + self.meta_data_name
 
     def _collect(self, _cand_, memory_dict):
-        results_dict = self._get_opt_meta_data(memory_dict)
+        para_pd, metrics_pd = self._get_opt_meta_data(memory_dict)
 
-        if not results_dict:
+        if para_pd is None:
             return None
 
-        para_pd = pd.DataFrame(results_dict["params"])
-        metric_pd = pd.DataFrame(results_dict["_score_"], columns=["_score_"])
-        n_rows = len(para_pd)
-        eval_time = pd.DataFrame(_cand_.eval_time[-n_rows:], columns=["eval_time"])
-        md_model = pd.concat(
-            [para_pd, metric_pd, eval_time], axis=1, ignore_index=False
-        )
+        md_model = pd.concat([para_pd, metrics_pd], axis=1, ignore_index=False)
 
         return md_model
 
@@ -128,7 +122,7 @@ class MemoryDump(MemoryIO):
         score_list = []
 
         if not memory_dict:
-            return None
+            return None, None
 
         for key in memory_dict.keys():
             pos = np.fromstring(key, dtype=int)
@@ -159,7 +153,13 @@ class MemoryDump(MemoryIO):
         results_dict["params"] = para_list
         results_dict["_score_"] = score_list
 
-        return results_dict
+        print("para_list", para_list)
+        print("score_list", score_list)
+
+        return (
+            pd.DataFrame(para_list),
+            pd.DataFrame(score_list),
+        )
 
     def _save_toCSV(self, meta_data_new, path):
         if os.path.exists(path):

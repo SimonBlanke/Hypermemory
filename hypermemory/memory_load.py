@@ -138,7 +138,7 @@ class MemoryLoad(MemoryIO):
         df_temp["pos_str"] = pos.apply(apply_tobytes, axis=1)
         df_temp["score"] = scores
 
-        self.memory_dict = df_temp.set_index("pos_str").to_dict()["score"]
+        self.memory_dict = df_temp.set_index("pos_str").to_dict()
 
         scores = np.array(scores)
         paras = np.array(paras)
