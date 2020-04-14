@@ -16,17 +16,15 @@ from .utils import object_hash
 
 
 class MemoryDump(MemoryIO):
-    def __init__(self, _space_, _main_args_, _cand_):
-        super().__init__(_space_, _main_args_, _cand_)
+    def __init__(self, X, y, model, search_space, path):
+        super().__init__(X, y, model, search_space, path)
 
-        self.memory_type = _main_args_.memory
-
-    def _save_memory(self, _main_args_, _cand_, memory_dict):
+    def _save_memory(self, memory_dict, main_args):
         self.memory_dict = memory_dict
 
         # Save meta_data
-        path = self._get_file_path(_cand_.func_)
-        meta_data = self._collect(_cand_, memory_dict)
+        path = self._get_file_path(self.model)
+        meta_data = self._collect(memory_dict)
 
         if meta_data is None:
             return
@@ -38,39 +36,16 @@ class MemoryDump(MemoryIO):
         obj_func_path = self.model_path + "objective_function.pkl"
 
         with open(obj_func_path, "wb") as pickle_file:
-            dill.dump(_cand_.func_, pickle_file)
+            dill.dump(self.model, pickle_file)
 
         # Save search space
         search_space_path = self.model_path + "search_space.pkl"
 
         with open(search_space_path, "wb") as pickle_file:
-            dill.dump(_cand_.search_space, pickle_file)
-
-        """
-        if not os.path.exists(obj_func_path):
-            file = open(obj_func_path, "w")
-            file.write(self._get_func_str(_cand_.func_))
-            file.close()
-        """
-        # Save search_config
-        search_config_path = self.date_path + "search_config.py"
-        search_config_temp = dict(self._main_args_.search_config)
-
-        for key in search_config_temp.keys():
-            if isinstance(key, str):
-                continue
-            search_config_temp[key.__name__] = search_config_temp[key]
-            del search_config_temp[key]
-
-        search_config_str = "search_config = " + str(search_config_temp)
-
-        if not os.path.exists(search_config_path):
-            file = open(search_config_path, "w")
-            file.write(search_config_str)
-            file.close()
+            dill.dump(self.search_space, pickle_file)
 
         # Save data_features
-        data_features = get_dataset_features(_main_args_.X, _main_args_.y)
+        data_features = get_dataset_features(self.X, self.y)
 
         if not os.path.exists(self.dataset_info_path):
             os.makedirs(self.dataset_info_path, exist_ok=True)
@@ -78,24 +53,20 @@ class MemoryDump(MemoryIO):
         with open(self.dataset_info_path + "data_features.json", "w") as f:
             json.dump(data_features, f, indent=4)
 
-        """
-        os.chdir(self.date_path)
-        os.system("black search_config.py")
-        os.getcwd()
-        """
+        if main_args:
+            run_data = {
+                "random_state": main_args.random_state,
+                "max_time": main_args.random_state,
+                "n_iter": main_args.n_iter,
+                "optimizer": main_args.optimizer,
+                "n_jobs": main_args.n_jobs,
+                "eval_time": main_args.eval_time,
+                "opt_time": main_args.opt_time,
+                "total_time": main_args.total_time,
+            }
 
-        run_data = {
-            "random_state": self._main_args_.random_state,
-            "max_time": self._main_args_.random_state,
-            "n_iter": self._main_args_.n_iter,
-            "optimizer": self._main_args_.optimizer,
-            "n_jobs": self._main_args_.n_jobs,
-            "eval_time": np.array(_cand_.eval_time).sum(),
-            "total_time": _cand_.total_time,
-        }
-
-        with open(self.date_path + "run_data.json", "w") as f:
-            json.dump(run_data, f, indent=4)
+            with open(self.date_path + "run_data.json", "w") as f:
+                json.dump(run_data, f, indent=4)
 
     def _get_func_str(self, func):
         return inspect.getsource(func)
@@ -106,7 +77,7 @@ class MemoryDump(MemoryIO):
 
         return self.model_path + self.meta_data_name
 
-    def _collect(self, _cand_, memory_dict):
+    def _collect(self, memory_dict):
         para_pd, metrics_pd = self._get_opt_meta_data(memory_dict)
 
         if para_pd is None:
@@ -115,6 +86,14 @@ class MemoryDump(MemoryIO):
         md_model = pd.concat([para_pd, metrics_pd], axis=1, ignore_index=False)
 
         return md_model
+
+    def pos2para(self, pos):
+        values_dict = {}
+        for i, key in enumerate(self.search_space.keys()):
+            pos_ = int(pos[i])
+            values_dict[key] = list(self.search_space[key])[pos_]
+
+        return values_dict
 
     def _get_opt_meta_data(self, memory_dict):
         results_dict = {}
@@ -126,7 +105,7 @@ class MemoryDump(MemoryIO):
 
         for key in memory_dict.keys():
             pos = np.fromstring(key, dtype=int)
-            para = self._space_.pos2para(pos)
+            para = self.pos2para(pos)
             score = memory_dict[key]
 
             for key in para.keys():
@@ -151,10 +130,7 @@ class MemoryDump(MemoryIO):
                 score_list.append(score)
 
         results_dict["params"] = para_list
-        results_dict["_score_"] = score_list
-
-        print("para_list", para_list)
-        print("score_list", score_list)
+        results_dict["score"] = score_list
 
         return (
             pd.DataFrame(para_list),
