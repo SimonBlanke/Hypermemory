@@ -2,11 +2,11 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __license__ = "MIT"
 
 
-from .memory import ShortTermMemory, LongTermMemory
+from .hypermemory import Hypermemory
 from .memory_helper import (
     delete_model,
     delete_model_dataset,
@@ -22,7 +22,6 @@ __all__ = [
     "connect_model_IDs",
     "split_model_IDs",
     "reset_memory",
-    "ShortTermMemory",
-    "LongTermMemory",
+    "Hypermemory",
     "get_best_model",
 ]
