@@ -18,5 +18,5 @@ reinstall:
 
 test:
 	cd tests/; \
-		pytest test_memory.py -p no:warnings; \
-		pytest test_memory_helpers.py -p no:warnings
+		pytest test_hypermemory.py -p no:warnings; \
+		pytest _test_memory_helpers.py -p no:warnings
