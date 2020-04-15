@@ -15,23 +15,6 @@ data = load_iris()
 X, y = data.data, data.target
 
 
-def test_short_term_memory():
-    def model1(para, X_train, y_train):
-        model = DecisionTreeClassifier(criterion=para["criterion"])
-        scores = cross_val_score(model, X_train, y_train, cv=5)
-
-        return scores.mean()
-
-    search_config = {model1: {"criterion": ["gini"]}}
-
-    c_time = time.time()
-    opt = Hyperactive(X, y, memory="short")
-    opt.search(search_config, n_iter=1000)
-    diff_time = time.time() - c_time
-
-    assert diff_time < 0.5
-
-
 def test_long_term_memory_times():
     def _model_(para, X_train, y_train):
         model = DecisionTreeClassifier(max_depth=para["max_depth"])
