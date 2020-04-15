@@ -69,6 +69,7 @@ def test_delete_model_dataset():
     delete_model_dataset(model, X, y)
 
 
+"""
 def test_connect_model_IDs():
     delete_model(model1)
     delete_model(model2)
@@ -111,3 +112,4 @@ def test_split_model_IDs():
 
 def test_get_best_model():
     score, search_config, init_config = get_best_model(X, y)
+"""
