@@ -134,15 +134,13 @@ class MemoryLoad(MemoryIO):
         df_temp["pos_str"] = pos.apply(apply_tobytes, axis=1)
         df_temp[["score", "eval_time"]] = scores
 
-        print("\n df_temp \n", df_temp)
-
         memory_dict = df_temp.set_index("pos_str").to_dict("index")
 
         scores = np.array(scores)
-        paras = np.array(paras)
+        pos = np.array(pos)
 
         idx = np.argmax(scores)
         self.score_best = scores[idx][0]  # get score but not eval_time
-        self.pos_best = paras[idx]
+        self.pos_best = pos[idx]
 
         return memory_dict
