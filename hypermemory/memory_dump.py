@@ -60,9 +60,9 @@ class MemoryDump(MemoryIO):
                 "n_iter": main_args.n_iter,
                 "optimizer": main_args.optimizer,
                 "n_jobs": main_args.n_jobs,
-                "eval_time": main_args.eval_time,
-                "opt_time": main_args.opt_time,
-                "total_time": main_args.total_time,
+                # "eval_time": main_args.eval_time,
+                # "opt_time": main_args.opt_time,
+                # "total_time": main_args.total_time,
             }
 
             with open(self.date_path + "run_data.json", "w") as f:
