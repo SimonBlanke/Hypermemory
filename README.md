@@ -31,9 +31,6 @@
         <a href="https://scrutinizer-ci.com/g/SimonBlanke/Hypermemory/">
         <img src="https://img.shields.io/scrutinizer/quality/g/SimonBlanke/Hypermemory?style=flat-square&logo=scrutinizer-ci" alt="img not loaded: try F5 :)">
         </a>
-        <a href="https://www.codefactor.io/repository/github/simonblanke/Hypermemory">
-        <img src="https://img.shields.io/codefactor/grade/github/SimonBlanke/Hypermemory?label=code%20factor&style=flat-square&logo=codefactor" alt="img not loaded: try F5 :)">
-        </a>
       </td>
     </tr>
     <tr/>    <tr align="left" valign="center">
@@ -41,9 +38,6 @@
         <strong>Latest versions:</strong>
       </td>
       <td>
-        <a href="https://github.com/SimonBlanke/Hypermemory/releases">
-          <img src="https://img.shields.io/github/v/release/SimonBlanke/Hypermemory?style=flat-square&logo=github" alt="img not loaded: try F5 :)">
-        </a>
         <a href="https://pypi.org/project/hypermemory/">
           <img src="https://img.shields.io/pypi/v/Hypermemory?style=flat-square&logo=PyPi&logoColor=white" alt="img not loaded: try F5 :)">
         </a>
