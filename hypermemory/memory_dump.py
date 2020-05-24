@@ -19,6 +19,39 @@ class MemoryDump(MemoryIO):
     def __init__(self, X, y, model, search_space, path):
         super().__init__(X, y, model, search_space, path)
 
+    def dump_object(self, _object, path):
+        with open(path, "wb") as dill_file:
+            dill.dump(_object, dill_file)
+
+    def dump_dict(self, _dict, path):
+        with open(path, "w") as json_file:
+            json.dump(_dict, json_file, indent=4)
+
+    def dump_dataframe(self, _dataframe, path):
+        if os.path.exists(path):
+            _dataframe_old = pd.read_csv(path)
+
+            assert len(_dataframe_old.columns) == len(
+                _dataframe.columns
+            ), "Warning meta data dimensionality does not match"
+
+            _dataframe_final = _dataframe_old.append(_dataframe)
+
+            columns = list(_dataframe_final.columns)
+            noScore = ["_score_", "cv_default_score", "eval_time", "run"]
+            columns_noScore = [c for c in columns if c not in noScore]
+
+            _dataframe_final = _dataframe_final.drop_duplicates(subset=columns_noScore)
+        else:
+            _dataframe_final = _dataframe
+
+        _dataframe_final.to_csv(path, index=False)
+
+
+class MemoryDump1(MemoryIO):
+    def __init__(self, X, y, model, search_space, path):
+        super().__init__(X, y, model, search_space, path)
+
     def _save_memory(self, memory_dict, main_args):
         self.memory_dict = memory_dict
 
