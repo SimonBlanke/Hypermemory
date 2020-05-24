@@ -17,7 +17,7 @@ from .utils import object_hash, model_id
 from .paths import meta_data_path, meta_data_name
 
 
-meta_path = meta_data_path()
+meta_path_default = meta_data_path()
 
 """
 def get_best_models(X, y):
@@ -82,14 +82,14 @@ def get_best_model(X, y):
         return (score_best, {obj_func: search_space}, {obj_func: best_para})
 
 
-def reset_memory(force_true=False):
+def reset_memory(meta_path=meta_path_default, force_true=False):
     if force_true:
-        _reset_memory()
+        _reset_memory(meta_path)
     elif query_yes_no():
-        _reset_memory()
+        _reset_memory(meta_path)
 
 
-def _reset_memory():
+def _reset_memory(meta_path):
     dirs = next(os.walk(meta_path))[1]
     for dir in dirs:
         shutil.rmtree(meta_path + dir)
