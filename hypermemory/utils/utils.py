@@ -26,13 +26,15 @@ def get_datetime():
 
 
 def is_sha1(maybe_sha):
-    if len(maybe_sha) != 40:
-        return False
-    try:
-        sha_int = int(maybe_sha, 16)
-    except ValueError:
-        return False
-    return True
+    if (
+        not isinstance(maybe_sha, int)
+        and not isinstance(maybe_sha, float)
+        and not isinstance(maybe_sha, str)
+    ):
+        if len(maybe_sha) == 40:
+            return True
+
+    return False
 
 
 def _get_pkl_hash(hash, model_path):

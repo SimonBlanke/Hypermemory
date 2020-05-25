@@ -4,13 +4,16 @@
 
 import os
 
-from .utils import get_datetime, model_id, _hash2obj
-from .paths import (
-    meta_data_path,
+from .utils import (
+    get_datetime,
+    model_id,
+    _hash2obj,
     model_path,
     date_path,
     meta_data_name,
 )
+
+from .paths import _paths_
 
 
 class MemoryIO:
@@ -31,7 +34,9 @@ class MemoryIO:
         if path:
             self.meta_path = path
         else:
-            self.meta_path = meta_data_path()
+            self.meta_path = _paths_["default"]
+
+        print("self.meta_path", self.meta_path)
 
         self.model_path = self.meta_path + model_path(model_id_)
         self.date_path = self.model_path + date_path(self.datetime)

@@ -13,11 +13,10 @@ from fnmatch import fnmatch
 import numpy as np
 import pandas as pd
 
-from .utils import object_hash, model_id
-from .paths import meta_data_path, meta_data_name
+from .utils import object_hash, model_id, meta_data_name
+from .paths import _paths_
 
-
-meta_path_default = meta_data_path()
+meta_path_default = _paths_["default"]
 
 """
 def get_best_models(X, y):

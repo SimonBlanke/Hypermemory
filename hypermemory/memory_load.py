@@ -12,8 +12,7 @@ import pandas as pd
 from functools import partial
 
 from .memory_io import MemoryIO
-from .utils import model_id
-from .paths import model_path
+from .utils import model_id, model_path
 
 
 def apply_tobytes(df):
@@ -69,15 +68,6 @@ class MemoryLoad(MemoryIO):
 
         return memory_dict
 
-    def find_nearest(array, value):
-        array = np.asarray(array)
-        idx = (np.abs(array - value)).argmin()
-        return idx
-
-    def idx_closest_values(self, X, Y):
-        dist = np.absolute(X - Y[:, np.newaxis])
-        return dist.argmin(axis=1)
-
     def apply_index(self, pos_key, df):
         return (
             self.search_space[pos_key].index(df)
@@ -96,6 +86,9 @@ class MemoryLoad(MemoryIO):
 
         if len(meta_data_list) > 0:
             meta_data = pd.concat(meta_data_list, ignore_index=True)
+
+            # column_names = meta_data.columns
+            # score_name = [name for name in column_names if self.score_col_name in name]
 
             para = meta_data[self.para_names]
             score = meta_data[self.score_col_name]
@@ -121,14 +114,8 @@ class MemoryLoad(MemoryIO):
         pos = paras.copy()
 
         for pos_key in self.search_space:
-            is_float = isinstance(self.search_space[pos_key][0], float)
-            if is_float:
-                pos[pos_key] = self.idx_closest_values(
-                    self.search_space[pos_key], paras[pos_key]
-                )
-            else:
-                apply_index = partial(self.apply_index, pos_key)
-                pos[pos_key] = paras[pos_key].apply(apply_index)
+            apply_index = partial(self.apply_index, pos_key)
+            pos[pos_key] = paras[pos_key].apply(apply_index)
 
         pos.dropna(how="any", inplace=True)
         pos = pos.astype("int64")
@@ -151,10 +138,8 @@ class MemoryLoad(MemoryIO):
         scores = np.array(scores)
         pos = np.array(pos)
 
-        scores = scores[:, 0]  # get score but not eval_time
         idx = np.argmax(scores)
-
-        self.score_best = scores[idx]
+        self.score_best = scores[idx][0]  # get score but not eval_time
         self.pos_best = pos[idx]
 
         return memory_dict
