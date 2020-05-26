@@ -8,6 +8,8 @@ import numpy as np
 from .memory_load import MemoryLoad
 from .memory_dump import MemoryDump
 
+from .paths import _paths_
+
 
 class Hypermemory:
     def __init__(self, X, y, model, search_space, path=None):
@@ -27,8 +29,8 @@ class Hypermemory:
 
         return self.memory_dict
 
-    def dump(self, memory, main_args=None):
-        self._dump_._save_memory(memory, main_args=main_args)
+    def dump(self, memory, path="default"):
+        self._dump_.dump_short_term_memory(memory, _paths_[path])
 
     def _get_para(self):
         if self.memory_dict is None:
@@ -37,21 +39,3 @@ class Hypermemory:
         para_pd, metrics_pd = self._dump_._get_opt_meta_data(self.memory_dict)
 
         return para_pd.values, np.expand_dims(metrics_pd["score"].values, axis=1)
-
-    """
-    def _get_hash(self, object):
-        return hashlib.sha1(object).hexdigest()
-
-    def _get_func_str(self, func):
-        return inspect.getsource(func)
-
-    def _obj2hash(self):
-        obj2hash_dict = {}
-        para_hash_list = self._get_para_hash_list()
-
-        for para_hash in para_hash_list:
-            obj = self._read_dill(para_hash)
-            obj2hash_dict[para_hash] = obj
-
-        return obj2hash_dict
-    """
