@@ -6,7 +6,7 @@ __version__ = "0.2.1"
 __license__ = "MIT"
 
 
-from .hypermemory import Hypermemory
+from .hypermemory_api import Hypermemory
 from .memory_helper import (
     delete_model,
     delete_model_dataset,
