@@ -7,7 +7,6 @@ import os
 
 def meta_data_path():
     current_path = os.path.realpath(__file__)
-    print("\n current_path \n", current_path)
     return current_path.rsplit("/", 1)[0] + "/meta_data/"
 
 
