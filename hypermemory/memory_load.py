@@ -15,13 +15,9 @@ from .memory_io import MemoryIO
 from .utils import model_id, model_path
 
 
-def apply_tobytes(df):
-    return df.values.tobytes()
-
-
 class MemoryLoad(MemoryIO):
-    def __init__(self, X, y, model, search_space, path):
-        super().__init__(X, y, model, search_space, path)
+    def __init__(self, X, y, model, search_space):
+        super().__init__(X, y, model, search_space)
 
         self.pos_best = None
         self.score_best = -np.inf
@@ -56,7 +52,7 @@ class MemoryLoad(MemoryIO):
 
             self._get_id_list(id_list_new)
 
-    def _load_memory(self):
+    def hyperactive_memory_load(self):
         para, score = self._read_func_metadata(self.model)
         if para is None or score is None:
             return {}
@@ -86,9 +82,6 @@ class MemoryLoad(MemoryIO):
 
         if len(meta_data_list) > 0:
             meta_data = pd.concat(meta_data_list, ignore_index=True)
-
-            # column_names = meta_data.columns
-            # score_name = [name for name in column_names if self.score_col_name in name]
 
             para = meta_data[self.para_names]
             score = meta_data[self.score_col_name]
@@ -126,20 +119,8 @@ class MemoryLoad(MemoryIO):
         paras = paras.replace(self.hash2obj)
         pos = self.para2pos(paras)
 
-        if len(pos) == 0:
-            return
-
-        df_temp = pd.DataFrame()
-        df_temp["pos_str"] = pos.apply(apply_tobytes, axis=1)
-        df_temp[["score", "eval_time"]] = scores
-
-        memory_dict = df_temp.set_index("pos_str").to_dict("index")
-
-        scores = np.array(scores)
-        pos = np.array(pos)
-
-        idx = np.argmax(scores)
-        self.score_best = scores[idx][0]  # get score but not eval_time
-        self.pos_best = pos[idx]
+        scores = scores.to_dict("records")
+        tuple_list = list(map(tuple, pos.values))
+        memory_dict = dict(zip(tuple_list, scores))
 
         return memory_dict
