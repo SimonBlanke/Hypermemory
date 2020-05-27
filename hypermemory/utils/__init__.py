@@ -10,6 +10,10 @@ from .utils import (
     get_datetime,
     is_sha1,
     _hash2obj,
+    _connect_key2value,
+    _split_key_value,
+    _reset_memory,
+    _query_yes_no,
 )
 
 from .path_utils import (
@@ -29,4 +33,8 @@ __all__ = [
     "model_path",
     "date_path",
     "meta_data_name",
+    "_connect_key2value",
+    "_split_key_value",
+    "_reset_memory",
+    "_query_yes_no",
 ]

@@ -2,11 +2,15 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
+import os
+import sys
+import json
+import dill
+import shutil
 import inspect
 import hashlib
 import datetime
 import glob
-import dill
 
 
 def function_string(function):
@@ -82,3 +86,52 @@ def _get_para_hash_list(search_space):
                 para_hash_list.append(para_hash)
 
     return para_hash_list
+
+
+def _connect_key2value(data, key_model, value_model):
+    if value_model in data[key_model]:
+        print("IDs of models are already connected")
+    else:
+        data[key_model].append(value_model)
+        print("IDs successfully connected")
+
+    return data
+
+
+def _split_key_value(data, key_model, value_model):
+    if value_model in data[key_model]:
+        data[key_model].remove(value_model)
+
+        if len(data[key_model]) == 0:
+            del data[key_model]
+        print("ID connection successfully deleted")
+    else:
+        print("IDs of models are not connected")
+
+    return data
+
+
+def _reset_memory(meta_path):
+    dirs = next(os.walk(meta_path))[1]
+    for dir in dirs:
+        shutil.rmtree(meta_path + dir)
+
+    with open(meta_path + "model_connections.json", "w") as f:
+        json.dump({}, f, indent=4)
+
+    print("Memory reset successful")
+
+
+def _query_yes_no():
+    valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
+    question = "Delete the entire long term memory?"
+
+    while True:
+        sys.stdout.write(question + " [y/n] ")
+        choice = input().lower()
+        if choice == "":
+            return False
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
