@@ -8,14 +8,7 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
 from hyperactive import Hyperactive
-from hypermemory import (
-    delete_model,
-    delete_model_dataset,
-    connect_model_IDs,
-    split_model_IDs,
-    get_best_model,
-    reset_memory,
-)
+from hypermemory import Hypermemory
 
 data = load_iris()
 X, y = data.data, data.target
@@ -42,31 +35,34 @@ def model2(para, X_train, y_train):
     return scores.mean()
 
 
-search_config = {model: {"criterion": ["gini"]}}
-search_config1 = {model1: {"max_depth": range(2, 500)}}
-search_config2 = {model2: {"max_depth": range(2, 500)}}
+search_space = {"criterion": ["gini"]}
+search_space1 = {"max_depth": range(2, 500)}
+search_space2 = {"max_depth": range(2, 500)}
 
 
 def test_reset_memory():
-    reset_memory(force_true=True)
+    mem = Hypermemory(X, y, model, search_space)
+    mem.reset_memory(force_true=True)
 
 
 def test_delete_model():
-    delete_model(model)
+    mem = Hypermemory(X, y, model, search_space)
+    mem.delete_model(model)
 
     opt = Hyperactive(X, y, memory="long")
-    opt.search(search_config)
+    opt.search({model: search_space})
 
-    delete_model(model)
+    mem.delete_model(model)
 
 
 def test_delete_model_dataset():
-    delete_model_dataset(model, X, y)
+    mem = Hypermemory(X, y, model, search_space)
+    mem.delete_model_dataset(model, X, y)
 
     opt = Hyperactive(X, y, memory="long")
-    opt.search(search_config)
+    opt.search({model: search_space})
 
-    delete_model_dataset(model, X, y)
+    mem.delete_model_dataset(model, X, y)
 
 
 """

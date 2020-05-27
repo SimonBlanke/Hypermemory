@@ -24,24 +24,15 @@ def model(para, X, y):
 
 search_space = {
     "max_depth": range(1, 5),
-    "min_samples_split": range(2, 5),
+    "min_samples_split": range(10, 50),
 }
 
 
 def test_():
     memory_in = {
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00": {
-            "score": 0.6274204028589994,
-            "eval_time": 0.005737781524658203,
-        },
-        b"\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00": {
-            "score": 0.6274204028589994,
-            "eval_time": 0.007668018341064453,
-        },
-        b"\x01\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00": {
-            "score": 0.6274204028589994,
-            "eval_time": 0.011501789093017578,
-        },
+        (1, 2): {"score": 0.6274204028589994, "eval_time": 0.005737781524658203},
+        (2, 3): {"score": 0.6274204028589994, "eval_time": 0.007668018341064453},
+        (3, 4): {"score": 0.6274204028589994, "eval_time": 0.011501789093017578},
     }
 
     mem = Hypermemory(X, y, model, search_space)
