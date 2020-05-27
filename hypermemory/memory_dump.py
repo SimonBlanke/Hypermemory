@@ -77,6 +77,8 @@ class MemoryDump(MemoryIO):
         self._create_hash_list()
         meta_data_df = self.memory_dict2dataframe(memory_dict, path)
 
+        meta_data_df["run"] = self.datetime
+
         self.dump_dataframe(meta_data_df, path)
 
     def _get_file_path(self, model_func):
