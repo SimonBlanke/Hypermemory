@@ -79,7 +79,20 @@ class MemoryDump(MemoryIO):
 
         meta_data_df["run"] = self.datetime
 
+        self.dump_object(self.model, self.model_path + "objective_function.pkl")
+        self.dump_object(self.search_space, self.model_path + "search_space.pkl")
+
+        data_features = get_dataset_features(self.X, self.y)
+
+        if not os.path.exists(self.dataset_info_path):
+            os.makedirs(self.dataset_info_path, exist_ok=True)
+
+        with open(self.dataset_info_path + "data_features.json", "w") as f:
+            json.dump(data_features, f, indent=4)
+
         self.dump_dataframe(meta_data_df, path)
+
+        print("\nMeta data saved in:\n", self.meta_path)
 
     def _get_file_path(self, model_func):
         if not os.path.exists(self.date_path):
