@@ -64,13 +64,6 @@ class MemoryLoad(MemoryIO):
 
         return memory_dict
 
-    def apply_index(self, pos_key, df):
-        return (
-            self.search_space[pos_key].index(df)
-            if df in self.search_space[pos_key]
-            else None
-        )
-
     def _read_func_metadata(self, model_func):
         paths = self._get_func_data_names()
 
@@ -102,13 +95,30 @@ class MemoryLoad(MemoryIO):
 
         return paths
 
+    def idx_closest_values(self, X, Y):
+        dist = np.absolute(X - Y[:, np.newaxis])
+        return dist.argmin(axis=1)
+
+    def apply_index(self, pos_key, df):
+        return (
+            self.search_space[pos_key].index(df)
+            if df in self.search_space[pos_key]
+            else None
+        )
+
     def para2pos(self, paras):
         paras = paras[self.para_names]
         pos = paras.copy()
 
         for pos_key in self.search_space:
-            apply_index = partial(self.apply_index, pos_key)
-            pos[pos_key] = paras[pos_key].apply(apply_index)
+            is_float = isinstance(self.search_space[pos_key][0], float)
+            if is_float:
+                pos[pos_key] = self.idx_closest_values(
+                    self.search_space[pos_key], paras[pos_key]
+                )
+            else:
+                apply_index = partial(self.apply_index, pos_key)
+                pos[pos_key] = paras[pos_key].apply(apply_index)
 
         pos.dropna(how="any", inplace=True)
         pos = pos.astype("int64")
