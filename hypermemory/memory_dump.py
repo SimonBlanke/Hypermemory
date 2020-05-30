@@ -64,7 +64,10 @@ class MemoryDump(MemoryIO):
             if self.search_space_types[key] == "object":
                 search_space_list = self.object_hash_dict[key]
 
-            para_list = list(itemgetter(*np_pos_)(search_space_list))
+            search_space_list = np.array(search_space_list)
+            para_list = search_space_list[np_pos_]
+
+            # para_list = list(itemgetter(*np_pos_)(search_space_list))
             para_dict[key] = para_list
 
         para_df = pd.DataFrame(para_dict)
