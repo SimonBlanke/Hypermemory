@@ -4,6 +4,11 @@
 
 <br>
 
+This package is a collection of core functionalities for the memory module in Hyperactive. It enables Hyperactive to "remember" previous evaluations, which can save significant computation time. The effect is, that every position in the search-space that has been evaluated once never needs to be evaluated again. The previous calculated score has been stored and can just be looked up instead of recalculating it.
+Hypermemory also enables persistent storage of python-objects in the meta-data. This means, that information about the objective-function and python-objects in the search-space can be saved and read via the dill-package.
+
+<br>
+
 <table>
   <tbody>
     <tr align="left" valign="center">
