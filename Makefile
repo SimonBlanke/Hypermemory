@@ -17,4 +17,4 @@ reinstall:
 
 
 test:
-	sh ./scripts/test.sh
+	pytest -p no:warnings -rfEX tests/ \
