@@ -55,7 +55,10 @@ class MemoryLoad(MemoryIO):
     def hyperactive_memory_load(self):
         para, score = self._read_func_metadata(self.model)
         if para is None or score is None:
+            print("No meta data found")
             return {}
+
+        print(len(para), "samples found")
 
         # _verb_.load_samples(para)
 
