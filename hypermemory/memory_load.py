@@ -120,8 +120,12 @@ class MemoryLoad(MemoryIO):
                     self.search_space[pos_key], paras[pos_key]
                 )
             else:
+                print("\n pos_key \n", pos_key, type(pos_key))
                 apply_index = partial(self.apply_index, pos_key)
+                print("\n apply_index \n", apply_index, type(apply_index))
                 pos[pos_key] = paras[pos_key].apply(apply_index)
+
+        print("\n pos \n", pos, type(pos))
 
         pos.dropna(how="any", inplace=True)
         pos = pos.astype("int64")
@@ -129,6 +133,8 @@ class MemoryLoad(MemoryIO):
         return pos
 
     def _load_data_into_memory(self, paras, scores):
+        print("\n paras \n", paras, type(paras))
+
         paras = paras.replace(self.hash2obj)
         pos = self.para2pos(paras)
 
