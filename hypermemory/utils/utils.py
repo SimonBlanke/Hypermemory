@@ -42,6 +42,7 @@ def is_sha1(maybe_sha):
 
 
 def _get_pkl_hash(hash, model_path):
+    print("\n model_path \n", model_path, type(model_path))
     paths = glob.glob(model_path + hash + "*.pkl")
 
     return paths
@@ -62,6 +63,7 @@ def _hash2obj(search_space, model_path):
 
 def _read_dill(value, model_path):
     paths = _get_pkl_hash(value, model_path)
+    print("\n paths \n", paths, type(paths))
     for path in paths:
         with open(path, "rb") as fp:
             value = dill.load(fp)
