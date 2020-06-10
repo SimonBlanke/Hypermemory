@@ -120,9 +120,7 @@ class MemoryLoad(MemoryIO):
                     self.search_space[pos_key], paras[pos_key]
                 )
             else:
-                print("\n pos_key \n", pos_key, type(pos_key))
                 apply_index = partial(self.apply_index, pos_key)
-                print("\n apply_index \n", apply_index, type(apply_index))
                 pos[pos_key] = paras[pos_key].apply(apply_index)
 
         print("\n pos \n", pos, type(pos))
@@ -138,16 +136,8 @@ class MemoryLoad(MemoryIO):
         paras = paras.replace(self.hash2obj)
         pos = self.para2pos(paras)
 
-        print("\n paras \n", paras, type(paras))
-        print("\n pos \n", pos, type(pos))
-        print("\n scores \n", scores, type(scores))
-        print("\n self.hash2obj \n", self.hash2obj, type(self.hash2obj))
-
         scores = scores.to_dict("records")
         tuple_list = list(map(tuple, pos.values))
         memory_dict = dict(zip(tuple_list, scores))
-
-        print("\n tuple_list \n", tuple_list, type(tuple_list))
-        print("\n memory_dict \n", memory_dict, type(memory_dict))
 
         return memory_dict

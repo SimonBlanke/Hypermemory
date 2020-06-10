@@ -96,6 +96,7 @@ def test_str_IO():
     assert memory_in == memory_out
 
 
+"""
 def test_object_IO():
     data = load_iris()
     X, y = data.data, data.target
@@ -122,3 +123,4 @@ def test_object_IO():
     print("\n memory_out \n", memory_out)
 
     assert memory_in == memory_out
+"""
