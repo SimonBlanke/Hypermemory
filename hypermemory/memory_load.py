@@ -132,8 +132,16 @@ class MemoryLoad(MemoryIO):
         paras = paras.replace(self.hash2obj)
         pos = self.para2pos(paras)
 
+        print("\n paras \n", paras, type(paras))
+        print("\n pos \n", pos, type(pos))
+        print("\n scores \n", scores, type(scores))
+        print("\n self.hash2obj \n", self.hash2obj, type(self.hash2obj))
+
         scores = scores.to_dict("records")
         tuple_list = list(map(tuple, pos.values))
         memory_dict = dict(zip(tuple_list, scores))
+
+        print("\n tuple_list \n", tuple_list, type(tuple_list))
+        print("\n memory_dict \n", memory_dict, type(memory_dict))
 
         return memory_dict
