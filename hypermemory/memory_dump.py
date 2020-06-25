@@ -49,7 +49,7 @@ class MemoryDump(MemoryIO):
 
         _dataframe_final.to_csv(path, index=False)
 
-    def memory_dict2dataframe(self, memory_dict, path):
+    def memory_dict2dataframe(self, memory_dict, object2hash=True):
         tuple_list = list(memory_dict.keys())
         result_list = list(memory_dict.values())
 
@@ -61,7 +61,7 @@ class MemoryDump(MemoryIO):
             np_pos_ = list(np_pos[:, i])
             search_space_list = list(self.search_space[key])
 
-            if self.search_space_types[key] == "object":
+            if self.search_space_types[key] == "object" and object2hash:
                 search_space_list = self.object_hash_dict[key]
 
             search_space_list = np.array(search_space_list)
@@ -78,7 +78,7 @@ class MemoryDump(MemoryIO):
 
         self._search_space_types()
         self._create_hash_list()
-        meta_data_df = self.memory_dict2dataframe(memory_dict, path)
+        meta_data_df = self.memory_dict2dataframe(memory_dict)
 
         meta_data_df["run"] = self.datetime
 
