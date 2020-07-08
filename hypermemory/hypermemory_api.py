@@ -29,18 +29,17 @@ from .utils import (
 from .paths import _paths_
 
 
-class Hypermemory:
-    def __init__(self, X, y, model, search_space):
+class Hypermemory(MemoryDump):
+    def __init__(self, *args, **kwargs):
         self.memory_dict = None
         self.meta_data_found = False
         self.n_dims = None
 
         self.meta_path = _paths_["default"]
 
-        self._load_ = MemoryLoad(X, y, model, search_space)
-        self._dump_ = MemoryDump(X, y, model, search_space)
-
     def load(self):
+        self._load_ = MemoryLoad(X, y, model, search_space)
+
         self.memory_dict = self._load_.hyperactive_memory_load()
         self.meta_data_found = self._load_.meta_data_found
 
@@ -50,6 +49,7 @@ class Hypermemory:
         return self.memory_dict
 
     def dump(self, memory):
+        self._dump_ = MemoryDump(X, y, model, search_space)
         self._dump_.hyperactive_memory_dump(memory)
 
     def _get_para(self):

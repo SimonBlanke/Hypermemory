@@ -21,17 +21,17 @@ class MemoryDump(MemoryIO):
     def __init__(self, X, y, model, search_space):
         super().__init__(X, y, model, search_space)
 
-    def dump_object(self, _object, path):
-        with open(path, "wb") as dill_file:
+    def dump_object(self, _object, path, name):
+        with open(path + name, "wb") as dill_file:
             dill.dump(_object, dill_file)
 
     def dump_dict(self, _dict, path):
         with open(path, "w") as json_file:
             json.dump(_dict, json_file, indent=4)
 
-    def dump_dataframe(self, _dataframe, path):
-        if os.path.exists(path):
-            _dataframe_old = pd.read_csv(path)
+    def dump_dataframe(self, _dataframe, path, name):
+        if os.path.exists(path + name):
+            _dataframe_old = pd.read_csv(path + name)
 
             assert len(_dataframe_old.columns) == len(
                 _dataframe.columns
@@ -47,7 +47,7 @@ class MemoryDump(MemoryIO):
         else:
             _dataframe_final = _dataframe
 
-        _dataframe_final.to_csv(path, index=False)
+        _dataframe_final.to_csv(path + name, index=False)
 
     def memory_dict2dataframe(self, memory_dict, object2hash=True):
         tuple_list = list(memory_dict.keys())
@@ -73,29 +73,25 @@ class MemoryDump(MemoryIO):
         para_df = pd.DataFrame(para_dict)
         return pd.concat([para_df, results_df], axis=1)
 
-    def hyperactive_memory_dump(self, memory_dict):
-        path = self._get_file_path(self.model)
-
-        self._search_space_types()
-        self._create_hash_list()
-        meta_data_df = self.memory_dict2dataframe(memory_dict)
-
-        meta_data_df["run"] = self.datetime
-
-        self.dump_object(self.model, self.model_path + "objective_function.pkl")
-        self.dump_object(self.search_space, self.model_path + "search_space.pkl")
-
+    def save_dataset_info(self, path, name):
         data_features = get_dataset_features(self.X, self.y)
 
-        if not os.path.exists(self.dataset_info_path):
-            os.makedirs(self.dataset_info_path, exist_ok=True)
+        if not os.path.exists(path):
+            os.makedirs(path, exist_ok=True)
 
-        with open(self.dataset_info_path + "data_features.json", "w") as f:
+        with open(path + name, "w") as f:
             json.dump(data_features, f, indent=4)
 
-        self.dump_dataframe(meta_data_df, path)
+    def save_search_data(self, memory_dict, path, name):
+        self._search_space_types()
+        self._create_hash_list(path)
+        meta_data_df = self.memory_dict2dataframe(memory_dict)
 
-        print("\nMeta data saved in:\n", self.meta_path)
+        # meta_data_df["run"] = self.datetime
+
+        self.dump_dataframe(meta_data_df, path, name)
+
+        print("\nMeta data saved in:\n", self.path)
 
     def _get_file_path(self, model_func):
         if not os.path.exists(self.date_path):
@@ -121,7 +117,7 @@ class MemoryDump(MemoryIO):
             else:
                 self.search_space_types[key] = "object"
 
-    def _create_hash_list(self):
+    def _create_hash_list(self, path):
         self.object_hash_dict = {}
 
         for key in self.search_space.keys():
@@ -134,10 +130,7 @@ class MemoryDump(MemoryIO):
                     para_dill = dill.dumps(value)
                     para_hash = object_hash(para_dill)
 
-                    self.dump_object(
-                        para_dill, self.model_path + str(para_hash) + ".pkl"
-                    )
-
+                    self.dump_object(para_dill, path, str(para_hash) + ".pkl")
                     object_hash_list.append(para_hash)
 
                 self.object_hash_dict[key] = object_hash_list

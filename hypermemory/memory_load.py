@@ -58,7 +58,7 @@ class MemoryLoad(MemoryIO):
             print("No meta data found")
             return {}
 
-        print(len(para), "samples found")
+        # print(len(para), "samples found")
 
         # _verb_.load_samples(para)
 
@@ -123,7 +123,7 @@ class MemoryLoad(MemoryIO):
                 apply_index = partial(self.apply_index, pos_key)
                 pos[pos_key] = paras[pos_key].apply(apply_index)
 
-        print("\n pos \n", pos, type(pos))
+        # print("\n pos \n", pos, type(pos))
 
         pos.dropna(how="any", inplace=True)
         pos = pos.astype("int64")
@@ -131,13 +131,26 @@ class MemoryLoad(MemoryIO):
         return pos
 
     def _load_data_into_memory(self, paras, scores):
-        print("\n paras \n", paras, type(paras))
+        # print("\n paras \n", paras, type(paras))
 
         paras = paras.replace(self.hash2obj)
         pos = self.para2pos(paras)
 
+        scores_np = np.array(scores)[:, 0]
+        paras_np = np.array(paras)
+
+        print("scores_np", scores_np)
+
+        idx = np.argmax(scores_np)
+        self.score_best = scores_np[idx]
+        self.pos_best = paras_np[idx]
+
+        print("self.score_best", self.score_best)
+
         scores = scores.to_dict("records")
         tuple_list = list(map(tuple, pos.values))
         memory_dict = dict(zip(tuple_list, scores))
+
+        print("Meta data successfully loaded")
 
         return memory_dict

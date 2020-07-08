@@ -15,7 +15,7 @@ from .paths import _paths_
 
 
 class MemoryIO:
-    def __init__(self, X, y, model, search_space):
+    def __init__(self, *args, **kwargs):
         self.X = X
         self.y = y
         self.model = model
