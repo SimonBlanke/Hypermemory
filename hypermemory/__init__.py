@@ -6,9 +6,7 @@ __version__ = "0.2.2"
 __license__ = "MIT"
 
 
-from .hypermemory_api import Hypermemory
+from .io_object import IoObject
+from .io_dataset_info import IoDatasetInfo
 
-
-__all__ = [
-    "Hypermemory",
-]
+__all__ = ["IoObject", "IoDatasetInfo"]
