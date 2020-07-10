@@ -3,7 +3,7 @@
 # License: MIT License
 
 import inspect
-from hypermemory import IoObject
+from hypermemory import IoDill
 
 
 def test_():
@@ -12,7 +12,7 @@ def test_():
 
     search_space = {"x1": range(1, 100)}
 
-    io_obj = IoObject("./", "objective_function.pkl")
+    io_obj = IoDill("./", "objective_function")
     io_obj.save(obj_func)
     obj_func_new = io_obj.load()
 

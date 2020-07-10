@@ -6,7 +6,8 @@ __version__ = "0.2.2"
 __license__ = "MIT"
 
 
-from .io_object import IoObject
-from .io_dataset_info import IoDatasetInfo
+from .io_dill import IoDill
+from .io_json import IoJson
+from .dataset_features import get_dataset_features
 
-__all__ = ["IoObject", "IoDatasetInfo"]
+__all__ = ["IoDill", "IoJson", "get_dataset_features"]
