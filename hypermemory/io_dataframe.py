@@ -4,28 +4,23 @@
 
 
 import os
+import glob
 import pandas as pd
 
 
-class IoDataframes:
-    def __init__(self, path, name):
-        self.path = path
-        self.name = name
+def save_dataframe(path, name, _dataframe):
+    if not os.path.exists(path):
+        os.makedirs(path, exist_ok=True)
 
-    def save(self, _dataframe):
-        if not os.path.exists(self.path):
-            os.makedirs(self.path, exist_ok=True)
+    _dataframe.to_csv(path + name + ".csv", index=False)
 
-        _dataframe_final.to_csv(self.path + self.name + ".csv"), index=False)
 
-    def load(self):
-        paths = paths + glob.glob(
-            self.path + "*.csv"
-        )
+def load_dataframes(path):
+    paths = glob.glob(path + "*.csv")
 
-        dataframe_list = []
-        for path in paths:
-            dataframe_list.append(pd.read_csv(path))
+    dataframe_list = []
+    for path in paths:
+        dataframe_list.append(pd.read_csv(path))
 
-        return dataframe_list
+    return dataframe_list
 

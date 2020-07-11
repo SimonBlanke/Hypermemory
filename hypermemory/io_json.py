@@ -6,20 +6,16 @@ import os
 import json
 
 
-class IoJson:
-    def __init__(self, path, name):
-        self.path = path
-        self.name = name
+def save_json(path, name, dictionary_):
+    if not os.path.exists(path):
+        os.makedirs(path, exist_ok=True)
 
-    def save(self, data_features):
-        if not os.path.exists(self.path):
-            os.makedirs(self.path, exist_ok=True)
+    with open(path + name + ".json", "w") as f:
+        json.dump(dictionary_, f, indent=4)
 
-        with open(self.path + self.name + ".json", "w") as f:
-            json.dump(data_features, f, indent=4)
 
-    def load(self):
-        with open(self.path + self.name + ".json", "r") as f:
-            data_features = json.load(f)
+def load_json(path, name):
+    with open(path + name + ".json", "r") as f:
+        dictionary_ = json.load(f)
 
-        return data_features
+    return dictionary_

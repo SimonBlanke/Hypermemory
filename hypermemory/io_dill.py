@@ -6,20 +6,16 @@ import os
 import dill
 
 
-class IoDill:
-    def __init__(self, path, name):
-        self.path = path
-        self.name = name
+def save_object(path, name, _object):
+    if not os.path.exists(path):
+        os.makedirs(path, exist_ok=True)
 
-    def save(self, _object):
-        if not os.path.exists(self.path):
-            os.makedirs(self.path, exist_ok=True)
+    with open(path + name + ".pkl", "wb") as dill_file:
+        dill.dump(_object, dill_file)
 
-        with open(self.path + self.name + ".pkl", "wb") as dill_file:
-            dill.dump(_object, dill_file)
 
-    def load(self):
-        with open(self.path + self.name + ".pkl", "rb") as dill_file:
-            _object = dill.load(dill_file)
+def load_object(path, name):
+    with open(path + name + ".pkl", "rb") as dill_file:
+        _object = dill.load(dill_file)
 
-        return _object
+    return _object
