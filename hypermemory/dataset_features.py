@@ -3,7 +3,7 @@
 # License: MIT License
 
 
-def get_dataset_features(array):
+def dataset_features(array):
     return {
         "array_size": array.size,
         "array_byte_size": array.itemsize,
