@@ -4,6 +4,7 @@
 
 import os
 import dill
+import datetime
 import numpy as np
 import pandas as pd
 import hashlib
@@ -21,6 +22,10 @@ from .io_helpers import (
 
 from .dataset_features import dataset_features
 from .memory_conv import memory_dict2dataframe, convert_dataframe, dataframe2memory_dict
+
+
+def get_datetime():
+    return datetime.datetime.now().strftime("%d.%m.%Y - %H:%M:%S:%f")
 
 
 class HyperactiveWrapper:
@@ -43,6 +48,11 @@ class HyperactiveWrapper:
         self.model = model
         self.search_space = search_space
 
+    def _drop_duplicates(self, dataframe, not_similar=["score", "eval_time"]):
+        columns = list(dataframe.columns)
+        columns_drop = [c for c in columns if c not in not_similar]
+        return dataframe.drop_duplicates(subset=columns_drop)
+
     def load(self):
         subdirs = self.paths.subdirs("model")
 
@@ -57,7 +67,14 @@ class HyperactiveWrapper:
                 )
                 dataframes_all.append(dataframe)
 
+        if len(dataframes_all) == 0:
+            return {}
+
         dataframe = pd.concat(dataframes_all, axis=0)
+        dataframe = self._drop_duplicates(dataframe)
+        print(
+            "\nLoading search data was successful:", len(dataframe), " samples found\n"
+        )
         memory_dict = dataframe2memory_dict(dataframe, self.search_space)
 
         return memory_dict
@@ -76,4 +93,6 @@ class HyperactiveWrapper:
         save_json(io_y_path, "y_meta_data", y_info)
         save_object(io_model_path, "model", self.model)
         save_object(io_search_space_path, "search_space", self.search_space)
-        save_dataframe(io_search_space_path, "search_data", dataframe)
+        save_dataframe(
+            io_search_space_path, "search_data_" + str(get_datetime()), dataframe
+        )
