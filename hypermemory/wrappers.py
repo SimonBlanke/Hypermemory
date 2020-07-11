@@ -1,0 +1,79 @@
+# Author: Simon Blanke
+# Email: simon.blanke@yahoo.com
+# License: MIT License
+
+import os
+import dill
+import numpy as np
+import pandas as pd
+import hashlib
+import inspect
+
+from .paths import HypermemoryPaths
+from .io_helpers import (
+    save_object,
+    load_object,
+    save_json,
+    load_json,
+    save_dataframe,
+    load_dataframes,
+)
+
+from .dataset_features import dataset_features
+from .memory_conv import memory_dict2dataframe, convert_dataframe, dataframe2memory_dict
+
+
+class HyperactiveWrapper:
+    def __init__(self, main_path, X, y, model, search_space):
+        self.paths = HypermemoryPaths(main_path)
+        self.paths.add_directory(name="X", prefix="X_ID:", id_type="array", object_=X)
+        self.paths.add_directory(name="y", prefix="y_ID:", id_type="array", object_=y)
+        self.paths.add_directory(
+            name="model", prefix="model_ID:", id_type="function", object_=model
+        )
+        self.paths.add_directory(
+            name="search_space",
+            prefix="search_space_ID:",
+            id_type="dictionary",
+            object_=search_space,
+        )
+
+        self.X = X
+        self.y = y
+        self.model = model
+        self.search_space = search_space
+
+    def load(self):
+        subdirs = self.paths.subdirs("model")
+
+        dataframes_all = []
+        for subdir in subdirs:
+            search_space = load_object(path=subdir, name="search_space")
+            dataframes = load_dataframes(subdir)
+
+            for dataframe in dataframes:
+                dataframe = convert_dataframe(
+                    dataframe, search_space, self.search_space
+                )
+                dataframes_all.append(dataframe)
+
+        dataframe = pd.concat(dataframes_all, axis=0)
+        memory_dict = dataframe2memory_dict(dataframe, self.search_space)
+
+        return memory_dict
+
+    def save(self, memory_dict):
+        X_info = dataset_features(self.X)
+        y_info = dataset_features(self.y)
+        dataframe = memory_dict2dataframe(memory_dict, self.search_space)
+
+        io_X_path = self.paths.path_dict["X"]
+        io_y_path = self.paths.path_dict["y"]
+        io_model_path = self.paths.path_dict["model"]
+        io_search_space_path = self.paths.path_dict["search_space"]
+
+        save_json(io_X_path, "X_meta_data", X_info)
+        save_json(io_y_path, "y_meta_data", y_info)
+        save_object(io_model_path, "model", self.model)
+        save_object(io_search_space_path, "search_space", self.search_space)
+        save_dataframe(io_search_space_path, "search_data", dataframe)

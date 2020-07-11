@@ -6,8 +6,8 @@ __version__ = "0.2.2"
 __license__ = "MIT"
 
 
-from .io_dill import IoDill
-from .io_json import IoJson
-from .dataset_features import get_dataset_features
+from .wrappers import HyperactiveWrapper
 
-__all__ = ["IoDill", "IoJson", "get_dataset_features"]
+__all__ = [
+    "HyperactiveWrapper",
+]
