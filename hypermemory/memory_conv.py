@@ -38,6 +38,9 @@ def memory_dict2dataframe(memory_dict, search_space):
     columns = list(search_space.keys())
     # columns = [col + ".index" for col in columns]
 
+    if not bool(memory_dict):
+        return pd.DataFrame([], columns=columns)
+
     pos_tuple_list = list(memory_dict.keys())
     result_list = list(memory_dict.values())
 
