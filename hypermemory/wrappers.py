@@ -48,10 +48,9 @@ class HyperactiveWrapper:
         self.model = model
         self.search_space = search_space
 
-    def _drop_duplicates(self, dataframe, not_similar=["score", "eval_time"]):
-        columns = list(dataframe.columns)
-        columns_drop = [c for c in columns if c not in not_similar]
-        return dataframe.drop_duplicates(subset=columns_drop)
+    def _drop_duplicates(self, dataframe):
+        columns_drop = list(self.search_space.keys())
+        return dataframe.drop_duplicates(subset=columns_drop, keep="last")
 
     def load(self):
         subdirs = self.paths.subdirs("model")
@@ -72,9 +71,7 @@ class HyperactiveWrapper:
 
         dataframe = pd.concat(dataframes_all, axis=0)
         dataframe = self._drop_duplicates(dataframe)
-        print(
-            "\nLoading search data was successful:", len(dataframe), " samples found\n"
-        )
+        print("Loading search data was successful:", len(dataframe), " samples found")
         memory_dict = dataframe2memory_dict(dataframe, self.search_space)
 
         return memory_dict
