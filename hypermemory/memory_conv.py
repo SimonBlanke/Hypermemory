@@ -39,8 +39,8 @@ def convert_dataframe(dataframe1, search_space1, search_space2):
 def memory_dict2dataframe(memory_dict, search_space):
     columns = list(search_space.keys())
 
-    n_keys = len(list(memory_dict.keys()))
-    if n_keys == 0:
+    if not bool(memory_dict):
+        print("Memory dictionary is empty.")
         return pd.DataFrame([], columns=columns)
 
     pos_tuple_list = list(memory_dict.keys())
@@ -57,6 +57,10 @@ def memory_dict2dataframe(memory_dict, search_space):
 
 def dataframe2memory_dict(dataframe, search_space):
     columns = list(search_space.keys())
+
+    if dataframe.empty:
+        print("Memory dataframe is empty.")
+        return {}
 
     positions = dataframe[columns]
     scores = dataframe.drop(columns, axis=1)
