@@ -22,6 +22,6 @@ def test_memory_dict2dataframe():
     dataframe = memory_dict2dataframe(memory_dict, search_space)
 
     array = np.array([[0, 0, 0.1, 0.1], [1, 1, 0.2, 0.2], [2, 2, 0.3, 0.3]])
-    df1 = pd.DataFrame(array, columns=["x", "y", "score", "eval_time"])
+    df1 = pd.DataFrame(array, columns=["x", "y", "eval_time", "score"])
 
     assert_frame_equal(df1, dataframe, check_dtype=False)

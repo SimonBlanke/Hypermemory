@@ -14,7 +14,7 @@ def test_dataframe2memory_dict():
     search_space = {"x": list(np.arange(20)), "y": list(np.arange(20))}
 
     array = np.array([[0, 0, 0.1, 0.1], [1, 1, 0.2, 0.2], [2, 2, 0.3, 0.3]])
-    df1 = pd.DataFrame(array, columns=["x", "y", "score", "eval_time"])
+    df1 = pd.DataFrame(array, columns=["x", "y", "eval_time", "score"])
 
     memory_dict_new = dataframe2memory_dict(df1, search_space)
 
