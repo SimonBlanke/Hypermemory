@@ -22,8 +22,8 @@ def find_version(*filepath):
 
 
 setup(
-    name="hypermemory",
-    version=find_version("hypermemory/__init__.py"),
+    name="optimization_metadata",
+    version=find_version("optimization_metadata/__init__.py"),
     author="Simon Blanke",
     author_email="simon.blanke@yahoo.com",
     license="MIT",
@@ -31,7 +31,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords=["visualization", "data-science"],
-    url="https://github.com/SimonBlanke/Hypermemory",
+    url="https://github.com/SimonBlanke/Optimization-Metadata",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
