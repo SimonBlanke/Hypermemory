@@ -13,7 +13,7 @@ def test_():
     data = load_iris()
     X, y = data.data, data.target
 
-    def himmelblau(para, X, y):
+    def himmelblau(para):
         return -(
             (para["x"] ** 2 + para["y"] - 11) ** 2
             + (para["x"] + para["y"] ** 2 - 7) ** 2
