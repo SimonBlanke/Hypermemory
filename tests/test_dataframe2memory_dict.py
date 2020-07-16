@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from hypermemory.memory_conv import dataframe2memory_dict
+from optimization_metadata.memory_conv import dataframe2memory_dict
 
 
 def test_dataframe2memory_dict():

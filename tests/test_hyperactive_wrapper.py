@@ -5,7 +5,7 @@
 
 import numpy as np
 
-from hypermemory import HyperactiveWrapper
+from optimization_metadata import HyperactiveWrapper
 from sklearn.datasets import load_iris
 
 

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from hypermemory.memory_conv import convert_dataframe
+from optimization_metadata.memory_conv import convert_dataframe
 
 
 def test_convert_dataframe1():
