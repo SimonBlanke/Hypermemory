@@ -52,7 +52,7 @@ class HyperactiveWrapper:
         columns_drop = list(self.search_space.keys())
         return dataframe.drop_duplicates(subset=columns_drop, keep="last")
 
-    def load(self):
+    def _load_dataframes(self):
         subdirs = self.paths.subdirs("model")
 
         dataframes_all = []
@@ -66,12 +66,22 @@ class HyperactiveWrapper:
                 )
                 dataframes_all.append(dataframe)
 
+        return dataframes_all
+
+    def load(self):
+        dataframes_all = self._load_dataframes()
         if len(dataframes_all) == 0:
             return {}
 
         dataframe = pd.concat(dataframes_all, axis=0)
         dataframe = self._drop_duplicates(dataframe)
-        print("Loading search data was successful:", len(dataframe), " samples found")
+        print(
+            "Loading search data for",
+            self.model.__name__,
+            "was successful:",
+            len(dataframe),
+            "samples found",
+        )
         memory_dict = dataframe2memory_dict(dataframe, self.search_space)
 
         return memory_dict
