@@ -69,12 +69,17 @@ class HyperactiveWrapper:
         return dataframes_all
 
     def load(self):
+        print("Loading search data for", self.model.__name__, "...", end="\r")
+
         dataframes_all = self._load_dataframes()
         if len(dataframes_all) == 0:
             return {}
 
         dataframe = pd.concat(dataframes_all, axis=0)
         dataframe = self._drop_duplicates(dataframe)
+
+        memory_dict = dataframe2memory_dict(dataframe, self.search_space)
+
         print(
             "Loading search data for",
             self.model.__name__,
@@ -82,24 +87,40 @@ class HyperactiveWrapper:
             len(dataframe),
             "samples found",
         )
-        memory_dict = dataframe2memory_dict(dataframe, self.search_space)
-
         return memory_dict
 
     def save(self, memory_dict):
-        X_info = dataset_features(self.X)
-        y_info = dataset_features(self.y)
         dataframe = memory_dict2dataframe(memory_dict, self.search_space)
 
-        io_X_path = self.paths.path_dict["X"]
-        io_y_path = self.paths.path_dict["y"]
-        io_model_path = self.paths.path_dict["model"]
-        io_search_space_path = self.paths.path_dict["search_space"]
+        if len(dataframe) == 0:
+            print(
+                "Saving search data for",
+                self.model.__name__,
+                "was canceled. No new samples found",
+            )
+        else:
+            print("Saving search data for", self.model.__name__, "...", end="\r")
 
-        save_json(io_X_path, "X_meta_data", X_info)
-        save_json(io_y_path, "y_meta_data", y_info)
-        save_object(io_model_path, "model", self.model)
-        save_object(io_search_space_path, "search_space", self.search_space)
-        save_dataframe(
-            io_search_space_path, "search_data_" + str(get_datetime()), dataframe
-        )
+            X_info = dataset_features(self.X)
+            y_info = dataset_features(self.y)
+
+            io_X_path = self.paths.path_dict["X"]
+            io_y_path = self.paths.path_dict["y"]
+            io_model_path = self.paths.path_dict["model"]
+            io_search_space_path = self.paths.path_dict["search_space"]
+
+            save_json(io_X_path, "X_meta_data", X_info)
+            save_json(io_y_path, "y_meta_data", y_info)
+            save_object(io_model_path, "model", self.model)
+            save_object(io_search_space_path, "search_space", self.search_space)
+            save_dataframe(
+                io_search_space_path, "search_data_" + str(get_datetime()), dataframe
+            )
+
+            print(
+                "Saving search data for",
+                self.model.__name__,
+                "was successful:",
+                len(dataframe),
+                "samples stored",
+            )
