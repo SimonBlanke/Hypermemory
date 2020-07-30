@@ -6,6 +6,11 @@ import numpy as np
 import pandas as pd
 
 
+def intersection(lst1, lst2):
+    inter = [value for value in lst1 if value in lst2]
+    return inter
+
+
 def convert_dataframe(dataframe1, search_space1, search_space2):
     dataframe2 = dataframe1.copy()
 
@@ -17,10 +22,10 @@ def convert_dataframe(dataframe1, search_space1, search_space2):
         search_elements1 = search_space1[para1]
         search_elements2 = search_space2[para1]
 
-        both = set(search_elements1).intersection(search_elements2)
+        inter = intersection(search_elements1, search_elements2)
 
-        indices_A = [search_elements1.index(x) for x in both]
-        indices_B = [search_elements2.index(x) for x in both]
+        indices_A = [search_elements1.index(x) for x in inter]
+        indices_B = [search_elements2.index(x) for x in inter]
 
         conv_dict = dict(zip(indices_A, indices_B))
 
