@@ -20,6 +20,7 @@ from .io_helpers import (
     load_dataframes,
 )
 
+from .verbosity import VerbosityLVL0, VerbosityLVL1
 from .dataset_features import dataset_features
 from .memory_conv import memory_dict2dataframe, convert_dataframe, dataframe2memory_dict
 
@@ -29,7 +30,7 @@ def get_datetime():
 
 
 class HyperactiveWrapper:
-    def __init__(self, main_path, X, y, model, search_space):
+    def __init__(self, main_path, X, y, model, search_space, verbosity=1):
         self.paths = HypermemoryPaths(main_path)
         self.paths.add_directory(name="X", prefix="X_ID:", id_type="array", object_=X)
         self.paths.add_directory(name="y", prefix="y_ID:", id_type="array", object_=y)
@@ -47,6 +48,11 @@ class HyperactiveWrapper:
         self.y = y
         self.model = model
         self.search_space = search_space
+
+        if verbosity == 0:
+            self.verb = VerbosityLVL0()
+        else:
+            self.verb = VerbosityLVL1()
 
     def _drop_duplicates(self, dataframe):
         columns_drop = list(self.search_space.keys())
@@ -69,7 +75,7 @@ class HyperactiveWrapper:
         return dataframes_all
 
     def load(self):
-        print("Loading search data for", self.model.__name__, "...", end="\r")
+        self.verb.load_search_data(self.model)
 
         dataframes_all = self._load_dataframes()
         if len(dataframes_all) == 0:
@@ -79,27 +85,18 @@ class HyperactiveWrapper:
         dataframe = self._drop_duplicates(dataframe)
 
         memory_dict = dataframe2memory_dict(dataframe, self.search_space)
+        self.verb.load_search_data_success(self.model, dataframe)
 
-        print(
-            "Loading search data for",
-            self.model.__name__,
-            "was successful:",
-            len(dataframe),
-            "samples found",
-        )
         return memory_dict
 
     def save(self, memory_dict):
         dataframe = memory_dict2dataframe(memory_dict, self.search_space)
 
         if len(dataframe) == 0:
-            print(
-                "Saving search data for",
-                self.model.__name__,
-                "was canceled. No new samples found",
-            )
+            self.verb.save_search_data_canceled(self.model)
+
         else:
-            print("Saving search data for", self.model.__name__, "...", end="\r")
+            self.verb.save_search_data(self.model)
 
             X_info = dataset_features(self.X)
             y_info = dataset_features(self.y)
@@ -117,10 +114,5 @@ class HyperactiveWrapper:
                 io_search_space_path, "search_data_" + str(get_datetime()), dataframe
             )
 
-            print(
-                "Saving search data for",
-                self.model.__name__,
-                "was successful:",
-                len(dataframe),
-                "samples stored",
-            )
+            self.verb.save_search_data_success(self.model, dataframe)
+
