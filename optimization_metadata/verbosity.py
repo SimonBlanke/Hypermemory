@@ -22,31 +22,33 @@ class VerbosityLVL0:
 
 class VerbosityLVL1:
     def load_search_data(self, model):
-        print("Loading search data for", model.__name__, "...", end="\r")
+        print("loading search data for", '"{}"'.format(model.__name__), "...", end="\r")
 
     def load_search_data_success(self, model, dataframe):
         print(
-            "Loading search data for",
-            model.__name__,
+            "loading search data for",
+            '"{}"'.format(model.__name__),
             "was successful:",
             len(dataframe),
             "samples found",
         )
 
     def save_search_data(self, model):
-        print("Saving search data for", model.__name__, "...", end="\r")
+        print(
+            "  saving search data for", '"{}"'.format(model.__name__), "...", end="\r"
+        )
 
     def save_search_data_canceled(self, model):
         print(
-            "Saving search data for",
-            model.__name__,
+            "  saving search data for",
+            '"{}"'.format(model.__name__),
             "was canceled. No new samples found",
         )
 
     def save_search_data_success(self, model, dataframe):
         print(
-            "Saving search data for",
-            model.__name__,
+            "  saving search data for",
+            '"{}"'.format(model.__name__),
             "was successful:",
             len(dataframe),
             "new samples stored",
